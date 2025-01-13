@@ -155,33 +155,21 @@ router.delete("/user/favorites", auth, async (req, res) => {
 //GET USER FAVORITES
 router.get("/user/favorites", auth, async (req, res) => {
   try {
-    //ajouter un pagination ?
-    const favorites = req.user.account.favorites;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const user = req.user;
+    const favorites = user.account.favorites;
+
+    const startIndex = (page - 1) * limit;
+    const paginatedFavorites = favorites.slice(startIndex, startIndex + limit);
 
     res.status(200).json({
-      _id: req.user._id,
+      page,
+      limit,
       totalFavorites: favorites.length,
-      favorites: favorites,
+      favorites: paginatedFavorites,
     });
-
-    // const page = parseInt(req.query.page) || 1;
-    // const limit = parseInt(req.query.limit) || 10;
-
-    // Récupérer les favoris de l'utilisateur connecté
-    // const user = req.user;
-    // const favorites = user.account.favorites;
-
-    // Appliquer la pagination
-    // const startIndex = (page - 1) * limit;
-    // const paginatedFavorites = favorites.slice(startIndex, startIndex + limit);
-
-    // Répondre avec les favoris paginés et les infos supplémentaires
-    // res.status(200).json({
-    //   page,
-    //   limit,
-    //   totalFavorites: favorites.length,
-    //   favorites: paginatedFavorites,
-    // });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

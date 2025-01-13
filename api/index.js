@@ -19,6 +19,8 @@ const comicsRoutes = require("./src/routes/comics");
 app.use(comicsRoutes);
 const charactersRoutes = require("./src/routes/characters");
 app.use(charactersRoutes);
+const creatorsRoutes = require("./src/routes/creators");
+app.use(creatorsRoutes);
 
 app.all("*", (req, res) => {
   res.json({ message: "Route not found" });
