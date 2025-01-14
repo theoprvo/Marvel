@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-size: 62.5%;
+  /* - -COLORS - - */
+  --white: #ffffff;
+}
+
+body {
+  font-size: 1.6rem;
+  line-height: 1.5;
+}
