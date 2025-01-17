@@ -1,25 +1,23 @@
-const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
-const auth = async (req, res, next) => {
+const auth = (req, res, next) => {
   try {
-    const token = req.headers.authorization?.replace("Bearer ", "");
-
-    if (!token) {
-      return res
-        .status(401)
-        .json({ message: "Unauthorized: No token provided" });
+    const accessToken = req.headers.authorization?.split(" ")[1];
+    if (!accessToken) {
+      return res.status(401).json({ error: "Access token is missing" });
     }
 
-    const user = await User.findOne({ token });
+    const decodedToken = jwt.verify(
+      accessToken,
+      process.env.ACCESS_TOKEN_SECRET
+    );
 
-    if (!user) {
-      return res.status(401).json({ message: "Unauthorized: Invalid token" });
-    }
-    req.user = user; //je stock le user dans la requete sous req.user pour éviter de faire d'autre requetes
+    req.user = {
+      email: decodedToken.email,
+    };
     next();
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(401).json({ error: "Invalid or expired access token" });
   }
 };
-
 module.exports = auth;

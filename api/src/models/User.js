@@ -34,10 +34,6 @@ const UserSchema = new mongoose.Schema(
       match: [regx, "Please provide a valid email address"],
     },
     account: accountSchema,
-    token: {
-      type: String,
-      required: true,
-    },
     hash: {
       type: String,
       required: true,
