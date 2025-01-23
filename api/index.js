@@ -4,7 +4,20 @@ const cors = require("cors");
 const connectDB = require("./src/config/database");
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+const allowedOrigins = ["http://localhost:5173", "https://mon-app.com"];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 
 connectDB();
 

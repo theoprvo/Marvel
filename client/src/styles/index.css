@@ -53,64 +53,6 @@
   font-family: "AlteHaas-bold";
 }
 
-/* SIZES (BASE : 1.6rem = 16px) */
-.font-8 {
-  font-size: 0.8rem;
-}
-.font-10 {
-  font-size: 1rem;
-}
-.font-11 {
-  font-size: 1.1rem;
-}
-.font-12 {
-  font-size: 1.2rem;
-}
-.font-13 {
-  font-size: 1.3rem;
-}
-.font-14 {
-  font-size: 1.4rem;
-}
-.font-16 {
-  font-size: 1.6rem;
-}
-.font-18 {
-  font-size: 1.8rem;
-}
-.font-20 {
-  font-size: 2rem;
-}
-.font-22 {
-  font-size: 2.2rem;
-}
-.font-24 {
-  font-size: 2.4rem;
-}
-.font-26 {
-  font-size: 2.6rem;
-}
-.font-28 {
-  font-size: 2.8rem;
-}
-.font-30 {
-  font-size: 3rem;
-}
-.font-32 {
-  font-size: 3.2rem;
-}
-.font-64 {
-  font-size: 6.4rem;
-}
-.font-90 {
-  font-size: 9rem;
-}
-.h1-alte {
-  line-height: 9rem;
-  letter-spacing: -0.25rem;
-  font-style: italic;
-}
-
 /* - - - - - - -  */
 /* - - - - - - -  */
 /* CUSTOM STYLES */
@@ -293,7 +235,6 @@ body {
 .label-primary {
   color: var(--primary-600);
   position: absolute;
-  font-size: 1.8rem;
   font-family: "abc-light";
   transition: 0.2s ease;
   top: 50%;
@@ -324,7 +265,6 @@ body {
   background: var(--primary-100);
   border-radius: 2px;
   outline: solid 1px var(--primary-200);
-  font-size: 2rem;
   font-family: "abc-book";
   transition: 0.1s ease;
   z-index: 1;
@@ -351,10 +291,16 @@ body {
 .input-primary:focus + .label-primary,
 .input-primary:valid + .label-primary {
   color: var(--primary-600);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   transform: translate(0, -3rem);
   background-color: var(--primary-100);
   z-index: 1;
+}
+.input-primary:-webkit-autofill {
+  -webkit-box-shadow: inset 50px 0px 150px #f6f3ec,
+    inset 200px 0px 200px #dcdad3;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--primary-900);
 }
 .input-info-text {
   color: var(--secondary-300);

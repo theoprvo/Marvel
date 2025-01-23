@@ -4,8 +4,10 @@ import ValidSVG from "../assets/img/valid_1.svg";
 import InvalidSVG from "../assets/img/cross_2.svg";
 import { LiaEyeSolid } from "react-icons/lia";
 import { LiaEyeSlashSolid } from "react-icons/lia";
+import axios from "axios";
+const ENDPOINT_URL = `/user/signup`;
 
-// TODO: Responsive + Google & Facebook OAuth + Error/Valid field icon restyle ?
+// TODO: Password security length - Responsive + Google & Facebook OAuth + Error/Valid field icon restyle ?
 
 const USER_REGEXP = /^[a-zA-Z][a-zA-Z0-9-_]{3,15}$/;
 const EMAIL_REGEXP = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
@@ -23,6 +25,7 @@ function Signup() {
   const [validEmail, setValidEmail] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
 
+  const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState<string>("");
   const [validPassword, setValidPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
@@ -57,13 +60,45 @@ function Signup() {
     setErrorMessage("");
   }, [username, email, password, confirmPassword]);
 
+  // console.log(`${import.meta.env.VITE_API_URL}${ENDPOINT_URL}`);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Username:", username, "Email:", email, "Password:", password);
-    setSuccess(true);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}${ENDPOINT_URL}`,
+        {
+          email,
+          username,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log(response.data);
+      console.log(response.accessToken);
+      console.log("after access token");
+
+      setSuccess(true);
+      //CLEAR INPUTS STATE
+    } catch (error) {
+      if (!error?.response) {
+        setErrorMessage("Network error. Please try again.");
+      } else if (error.response?.status === 409) {
+        setErrorMessage("Email already exists.");
+      } else {
+        setErrorMessage("An error occurred. Please try again.");
+      }
+      // errorRef.current.focus();
+    }
   };
 
-  const [visible, setVisible] = useState(false);
   const togglePasswordVisibility = () => {
     const iconEye = visible ? (
       <LiaEyeSlashSolid
@@ -86,32 +121,41 @@ function Signup() {
   return (
     <div>
       {success ? (
-        <section>
+        <section className="flex flex-col items-center justify-center min-h-screen">
           <h1>C'est good !</h1>
           <p>Le compte est créer mon frere !</p>
           <Link to="/">Home</Link>
         </section>
       ) : (
         <div className="min-h-screen flex row-auto test2 bg-cover bg-center bg-no-repeat">
-          <div className="w-full flex justify-center items-end pb-96 pl-20">
-            <h1 className="font-alte-b h1-alte font-90 uppercase color-primary-100">
+          <div className="hidden justify-center items-end lg:flex lg:w-6/12 lg:pb-96">
+            <h1 className="font-alte-b uppercase italic color-primary-100 lg:text-x64 lg:ml-10 xl:text-x80 xl:ml-16 2xl:text-x90 2xl:ml-20">
               Create Your Account
             </h1>
           </div>
-          <div className="w-full flex justify-center items-center">
-            <section className="bg-color-primary-100 w-8/12 px-24 py-28 rounded-sm">
-              <p
-                ref={errorRef}
-                className={errorMessage ? "display" : "hidden"}
-                aria-live="assertive"
-              >
-                {errorMessage}
-              </p>
-              <h2 className="pb-12 font-32 font-abc-h color-primary-900">
+          <div className="w-full flex flex-col items-center justify-center lg:w-6/12">
+            <div className="mt-20 sm:mb-8 lg:hidden">
+              <h2 className="font-alte-b uppercase italic text-center color-primary-50 text-x36 sm:text-x44">
+                Create Your Account
+              </h2>
+            </div>
+            <section className="bg-color-primary-100 w-11/12 my-6 p-8 sm:w-10/12 sm:p-12 md:w-9/12 lg:w-11/12 xl:w-10/12 2xl:w-7/12 rounded-sm">
+              <h2 className="font-abc-h text-x26 md:text-x28 text-center lg:text-left mb-8 color-primary-900">
                 Sign Up
               </h2>
+              {errorMessage && (
+                <div className="mb-6">
+                  <p
+                    ref={errorRef}
+                    className="font-abc-b text-x16 text-red-400"
+                    aria-live="assertive"
+                  >
+                    {errorMessage}
+                  </p>
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
-                <div className="pb-8">
+                <div className="pb-8 md:pb-10">
                   <div className={username && "row-container"}>
                     <div className="input-container">
                       <input
@@ -119,8 +163,8 @@ function Signup() {
                         id="username"
                         className={
                           validUsername || !username
-                            ? "input-primary input-primary-bg px-8 pt-2 w-full"
-                            : "input-primary input-primary-bg-invalid px-8 pt-2 w-full"
+                            ? "input-primary input-primary-bg px-8 pt-2 w-full text-x16 lg:text-x18"
+                            : "input-primary input-primary-bg-invalid px-8 pt-2 w-full text-x16 lg:text-x18"
                         }
                         ref={usernameRef}
                         autoComplete="off"
@@ -132,7 +176,7 @@ function Signup() {
                         onBlur={() => setUsernameFocus(false)}
                       />
                       <label
-                        className="label-primary px-2 mx-6"
+                        className="label-primary px-2 mx-6 text-x15 md:text-x16 lg:text-x17"
                         htmlFor="username"
                       >
                         Username *
@@ -161,7 +205,7 @@ function Signup() {
                     </div>
                   )}
                 </div>
-                <div className="pb-8">
+                <div className="pb-8 md:pb-10">
                   <div className={email && "row-container"}>
                     <div className="input-container">
                       <input
@@ -169,8 +213,8 @@ function Signup() {
                         id="email"
                         className={
                           validEmail || !email
-                            ? "input-primary input-primary-bg px-8 pt-2 w-full"
-                            : "input-primary input-primary-bg-invalid px-8 pt-2 w-full"
+                            ? "input-primary input-primary-bg px-8 pt-2 w-full text-x16 lg:text-x18"
+                            : "input-primary input-primary-bg-invalid px-8 pt-2 w-full text-x16 lg:text-x18"
                         }
                         autoComplete="off"
                         required
@@ -182,7 +226,7 @@ function Signup() {
                       />
                       <label
                         htmlFor="email"
-                        className="label-primary px-2 mx-6"
+                        className="label-primary px-2 mx-6 text-x15 md:text-x16 lg:text-x17"
                       >
                         Email *
                       </label>
@@ -210,7 +254,7 @@ function Signup() {
                     </div>
                   )}
                 </div>
-                <div className="pb-8">
+                <div className="pb-8 md:pb-10">
                   <div className={password && "row-container"}>
                     <div className="input-container">
                       <input
@@ -218,8 +262,8 @@ function Signup() {
                         id="password"
                         className={
                           validPassword || !password
-                            ? "input-primary input-primary-bg px-8 pt-2 w-full"
-                            : "input-primary input-primary-bg-invalid px-8 pt-2 w-full"
+                            ? "input-primary input-primary-bg px-8 pt-2 w-full text-x16 lg:text-x18"
+                            : "input-primary input-primary-bg-invalid px-8 pt-2 w-full text-x16 lg:text-x18"
                         }
                         required
                         aria-invalid={validPassword ? "false" : "true"}
@@ -230,7 +274,7 @@ function Signup() {
                       />
                       <label
                         htmlFor="password"
-                        className="label-primary px-2 mx-6"
+                        className="label-primary px-2 mx-6 text-x15 md:text-x16 lg:text-x17"
                       >
                         Password *
                       </label>
@@ -264,7 +308,7 @@ function Signup() {
                     </div>
                   )}
                 </div>
-                <div className="pb-8">
+                <div className="pb-8 md:pb-10">
                   <div className={confirmPassword && "row-container"}>
                     <div className="input-container">
                       <input
@@ -272,8 +316,8 @@ function Signup() {
                         id="confirm-password"
                         className={
                           validConfirmPassword || !confirmPassword
-                            ? "input-primary input-primary-bg px-8 pt-2 w-full"
-                            : "input-primary input-primary-bg-invalid px-8 pt-2 w-full"
+                            ? "input-primary input-primary-bg px-8 pt-2 w-full text-x16 lg:text-x18"
+                            : "input-primary input-primary-bg-invalid px-8 pt-2 w-full text-x16 lg:text-x18"
                         }
                         required
                         aria-invalid={validConfirmPassword ? "false" : "true"}
@@ -284,7 +328,7 @@ function Signup() {
                       />
                       <label
                         htmlFor="confirm-password"
-                        className="label-primary px-2 mx-6"
+                        className="label-primary px-2 mx-6 text-x15 md:text-x16 lg:text-x17"
                       >
                         Confirm Password *
                       </label>
@@ -349,30 +393,29 @@ function Signup() {
 
               <div className="oauth-section">
                 {/* TODO: Register with google */}
-                <div className="flex flex-row items-center justify-center my-16">
+                <div className="flex flex-row items-center justify-center my-12">
                   <div className="h-px bg-color-primary-300 w-5/12"></div>
                   <p className="w-2/12 text-center color-primary-500">OR</p>
                   <div className="h-px bg-color-primary-300 w-5/12"></div>
                 </div>
-              </div>
-              <div className="flex flex-row items-center justify-center gap-4">
-                <button className="button-primary font-abc-m font-22 py-3 w-1/2">
-                  Sign up with Google
-                </button>
-                <button className="button-primary font-abc-m font-22 py-3 w-1/2">
-                  Sign up with Facebook
-                </button>
-              </div>
-
-              <div className="flex justify-center mt-8">
-                <p className="font-abc-l font-14 color-primary-700">
-                  Already have an account ?
-                  <Link to="/login">
-                    <span className="color-secondary-500 pl-2 hover:underline">
-                      Sign in
-                    </span>
-                  </Link>
-                </p>
+                <div className="flex flex-row items-center justify-center gap-4">
+                  <button className="button-primary font-abc-m font-22 py-3 w-1/2">
+                    Sign up with Google
+                  </button>
+                  <button className="button-primary font-abc-m font-22 py-3 w-1/2">
+                    Sign up with Facebook
+                  </button>
+                </div>
+                <div className="flex justify-center mt-8">
+                  <p className="font-abc-l font-14 color-primary-700">
+                    Already have an account ?
+                    <Link to="/login">
+                      <span className="color-secondary-500 pl-2 hover:underline">
+                        Sign in
+                      </span>
+                    </Link>
+                  </p>
+                </div>
               </div>
             </section>
           </div>
