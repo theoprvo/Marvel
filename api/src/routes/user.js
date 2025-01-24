@@ -126,17 +126,15 @@ router.get("/user/logout", auth, async (req, res) => {
 });
 
 //REFRESH-TOKEN
-//@public
+//@private
 router.post("/user/refresh-token", (req, res) => {
-  const refreshToken = req.body.refreshToken;
-  console.log(refreshToken);
+  const refreshToken = req.cookies.jwt;
 
   if (!refreshToken) {
     return res.status(403).json({ error: "No refresh token provided" });
   }
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    console.log(decoded);
     const newAccessToken = createAccessToken(decoded);
 
     res.status(200).json({ accessToken: newAccessToken });

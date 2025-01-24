@@ -4,6 +4,7 @@ import ValidSVG from "../assets/img/valid_1.svg";
 import InvalidSVG from "../assets/img/cross_2.svg";
 import { LiaEyeSolid } from "react-icons/lia";
 import { LiaEyeSlashSolid } from "react-icons/lia";
+import { PulseLoader } from "react-spinners";
 import axios from "axios";
 const ENDPOINT_URL = `/user/signup`;
 
@@ -35,6 +36,7 @@ function Signup() {
   const [confirmPasswordFocus, setConfirmPasswordFocus] = useState(false);
 
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   // ??
@@ -60,10 +62,9 @@ function Signup() {
     setErrorMessage("");
   }, [username, email, password, confirmPassword]);
 
-  // console.log(`${import.meta.env.VITE_API_URL}${ENDPOINT_URL}`);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     console.log("Username:", username, "Email:", email, "Password:", password);
     try {
       const response = await axios.post(
@@ -80,13 +81,16 @@ function Signup() {
           withCredentials: true,
         }
       );
-
+      console.log("after post");
+      setIsLoading(false);
       console.log(response.data);
-      console.log(response.accessToken);
-      console.log("after access token");
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
 
       setSuccess(true);
-      //CLEAR INPUTS STATE
+      //REACT RERDIRECT NAVIGATION
     } catch (error) {
       if (!error?.response) {
         setErrorMessage("Network error. Please try again.");
@@ -95,7 +99,7 @@ function Signup() {
       } else {
         setErrorMessage("An error occurred. Please try again.");
       }
-      // errorRef.current.focus();
+      errorRef.current.focus();
     }
   };
 
@@ -367,28 +371,34 @@ function Signup() {
                     </div>
                   )}
                 </div>
-                <div>
-                  <button
-                    className={
-                      !validUsername ||
-                      !validEmail ||
-                      !validPassword ||
-                      !validConfirmPassword
-                        ? "bg-color-primary-300 color-primary-100 font-abc-m font-22 py-3 w-full cursor-not-allowed"
-                        : "button-primary font-abc-m font-22 py-3 w-full"
-                    }
-                    disabled={
-                      !validUsername ||
-                      !validEmail ||
-                      !validPassword ||
-                      !validConfirmPassword
-                        ? true
-                        : false
-                    }
-                  >
-                    Sign Up
-                  </button>
-                </div>
+                {isLoading ? (
+                  <div className="flex justify-center">
+                    <PulseLoader color="#eb474a" margin={4} size={10} />
+                  </div>
+                ) : (
+                  <div>
+                    <button
+                      className={
+                        !validUsername ||
+                        !validEmail ||
+                        !validPassword ||
+                        !validConfirmPassword
+                          ? "bg-color-primary-300 color-primary-100 font-abc-m font-22 py-3 w-full cursor-not-allowed"
+                          : "button-primary font-abc-m font-22 py-3 w-full"
+                      }
+                      disabled={
+                        !validUsername ||
+                        !validEmail ||
+                        !validPassword ||
+                        !validConfirmPassword
+                          ? true
+                          : false
+                      }
+                    >
+                      Sign Up
+                    </button>
+                  </div>
+                )}
               </form>
 
               <div className="oauth-section">

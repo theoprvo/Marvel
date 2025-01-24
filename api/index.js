@@ -26,6 +26,8 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Welcome to MARVEL API" });
 });
 
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 const userRoutes = require("./src/routes/user");
 app.use(userRoutes);
 const comicsRoutes = require("./src/routes/comics");
