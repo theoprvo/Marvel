@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext, ReactNode } from "react";
 interface AuthContextType {
   isAuthenticated: boolean;
   accessToken: string | null;
-  login: (token: string) => void;
+  login: (newAccessToken: string) => void;
   logout: () => void;
 }
 
@@ -15,14 +15,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
-  const login = (token: string) => {
+  const login = (newAccessToken: string) => {
+    console.log("fonction login authProvider :", newAccessToken);
+    setAccessToken(newAccessToken);
     setIsAuthenticated(true);
-    setAccessToken(token);
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
     setAccessToken(null);
+    setIsAuthenticated(false);
   };
 
   return (

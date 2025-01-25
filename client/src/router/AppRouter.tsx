@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import ProtectedRoutes from "../utils/ProtectedRoutes";
 import Home from "../pages/Home";
 import Profile from "../pages/Profile";
 import Login from "../pages/Login";
@@ -13,7 +14,6 @@ const AppRouter = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/profile" element={<Profile />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/characters" element={<Characters />} />
@@ -21,6 +21,10 @@ const AppRouter = () => {
       <Route path="/comics" element={<Comics />} />
       <Route path="/comics/:id" element={<ComicDetails />} />
       <Route path="*" element={<NotFound />} />
+
+      <Route element={<ProtectedRoutes />}>
+        <Route path="/profile" element={<Profile />} />
+      </Route>
     </Routes>
   );
 };

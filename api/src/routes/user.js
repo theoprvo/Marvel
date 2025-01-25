@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
 const auth = require("../middlewares/auth");
+const { log } = require("console");
 
 const createAccessToken = (user) => {
   return jwt.sign(
@@ -15,7 +16,7 @@ const createAccessToken = (user) => {
       email: user.email,
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "2m" }
   );
 };
 
@@ -129,6 +130,8 @@ router.get("/user/logout", auth, async (req, res) => {
 //@private
 router.post("/user/refresh-token", (req, res) => {
   const refreshToken = req.cookies.jwt;
+  console.log("cookies -> ", refreshToken);
+  console.log("req.cookies -> ", req.cookies);
 
   if (!refreshToken) {
     return res.status(403).json({ error: "No refresh token provided" });

@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useContext } from "react";
-import AuthContext from "../contexts/authProvider";
+import { useEffect, useState, useRef } from "react";
+import { useAuth } from "../contexts/authProvider";
 import { Link } from "react-router-dom";
 import { PulseLoader } from "react-spinners";
 import { LiaEyeSolid } from "react-icons/lia";
@@ -13,7 +13,7 @@ const EMAIL_REGEXP = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 const PASSWORD_REGEXP = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,24}$/;
 
 function Login() {
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { login } = useAuth();
   const emailRef = useRef<HTMLInputElement | null>(null);
   const errorRef = useRef<HTMLParagraphElement | null>(null);
 
@@ -52,6 +52,7 @@ function Login() {
     e.preventDefault();
     setIsLoading(true);
     try {
+      //remplacer par axiosInstance
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}${ENDPOINT_URL}`,
         {
@@ -66,14 +67,16 @@ function Login() {
         }
       );
       console.log("response : ", response.data);
-      const accessToken = response.data.accessToken;
-      setIsAuthenticated(true);
-      // localStorage.setItem("accessToken", accessToken);
-      // ROLES
-      setEmail("");
-      setPassword("");
-      setIsLoading(false);
-      setSuccess(true);
+      const { accessToken } = response.data;
+
+      if (accessToken) {
+        login(accessToken);
+        setEmail("");
+        setPassword("");
+        setIsLoading(false);
+        console.log("Succes login");
+        setSuccess(true);
+      }
     } catch (error) {
       if (!error?.response) {
         setErrorMessage("No Server Response. Please try again later.");
@@ -117,14 +120,14 @@ function Login() {
       {success ? (
         <section className="flex flex-col items-center justify-center min-h-screen">
           <h1>C'est good !</h1>
-          <p>Le compte est créer mon frere !</p>
-          <Link to="/">Home</Link>
+          <p>Tu es co mon frere !</p>
+          <Link to="/profile">Mon profil</Link>
         </section>
       ) : (
         <div className="flex justify-center items-center min-h-screen test2 bg-cover bg-center bg-no-repeat">
           <section className="bg-color-primary-100 w-11/12 my-6 p-8 sm:w-10/12 sm:p-12 md:w-9/12 lg:w-11/12 xl:w-10/12 2xl:w-7/12 rounded-sm">
             <h2 className="font-abc-h text-x26 md:text-x28 text-center lg:text-left mb-8 color-primary-900">
-              Sign Up
+              Sign In
             </h2>
             {errorMessage && (
               <div className="mb-6">
@@ -152,7 +155,6 @@ function Login() {
                           ? "input-primary input-primary-bg px-8 pt-2 w-full text-x16 lg:text-x18"
                           : "input-primary input-primary-bg-invalid px-8 pt-2 w-full text-x16 lg:text-x18"
                       }
-                      autoComplete="off"
                       required
                       aria-invalid={validEmail ? "false" : "true"}
                       aria-describedby="email-note"
