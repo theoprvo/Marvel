@@ -16,7 +16,7 @@ const createAccessToken = (user) => {
       email: user.email,
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "2m" }
+    { expiresIn: "30s" }
   );
 };
 
@@ -129,10 +129,12 @@ router.get("/user/logout", auth, async (req, res) => {
 });
 
 //REFRESH-TOKEN
-//@private
+//@public
 router.post("/user/refresh-token", (req, res) => {
   console.log("Cookies reçus :", req.cookies); // Vérifie si le cookie 'jwt' est présent
   console.log("Headers :", req.headers); // Vérifie si les entêtes sont correctes
+  console.log("Mon jwt cookie :", req.cookies.jwt);
+
   const refreshToken = req.cookies.jwt;
 
   if (!refreshToken) {
@@ -140,6 +142,8 @@ router.post("/user/refresh-token", (req, res) => {
   }
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    console.log("decoded values :", decoded);
+
     const newAccessToken = createAccessToken(decoded);
 
     res.status(200).json({ accessToken: newAccessToken });
