@@ -99,6 +99,8 @@ router.post("/user/login", async (req, res) => {
       httpOnly: true,
       secure: true,
       maxAge: 1000 * 60 * 60 * 24 * 21,
+      sameSite: "None",
+      // domain: ".theopruvot.fr",
     });
     res.status(200).json({ accessToken });
   } catch (error) {
