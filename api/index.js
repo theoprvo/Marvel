@@ -5,7 +5,10 @@ const connectDB = require("./src/config/database");
 const app = express();
 app.use(express.json());
 
-const allowedOrigins = ["http://localhost:5173", "https://mon-app.com"];
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://www.marvel.theopruvot.fr",
+];
 app.use(
   cors({
     origin: (origin, callback) => {

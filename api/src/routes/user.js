@@ -129,9 +129,9 @@ router.get("/user/logout", auth, async (req, res) => {
 //REFRESH-TOKEN
 //@private
 router.post("/user/refresh-token", (req, res) => {
+  console.log("Cookies reçus :", req.cookies); // Vérifie si le cookie 'jwt' est présent
+  console.log("Headers :", req.headers); // Vérifie si les entêtes sont correctes
   const refreshToken = req.cookies.jwt;
-  console.log("cookies -> ", refreshToken);
-  console.log("req.cookies -> ", req.cookies);
 
   if (!refreshToken) {
     return res.status(403).json({ error: "No refresh token provided" });
