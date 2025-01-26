@@ -15,8 +15,8 @@ const EMAIL_REGEXP = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 const PASSWORD_REGEXP = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,24}$/;
 
 function Signup() {
-  const usernameRef = useRef();
-  const errorRef = useRef();
+  const usernameRef = useRef<HTMLInputElement | null>(null);
+  const errorRef = useRef<HTMLParagraphElement | null>(null);
 
   const [username, setUsername] = useState<string>("");
   const [validUsername, setValidUsername] = useState(false);
@@ -26,7 +26,6 @@ function Signup() {
   const [validEmail, setValidEmail] = useState(false);
   const [emailFocus, setEmailFocus] = useState(false);
 
-  const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState<string>("");
   const [validPassword, setValidPassword] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
@@ -39,7 +38,6 @@ function Signup() {
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // ??
   useEffect(() => {
     usernameRef.current.focus();
   }, []);
@@ -103,24 +101,23 @@ function Signup() {
     }
   };
 
+  const [visible, setVisible] = useState(false);
   const togglePasswordVisibility = () => {
-    const iconEye = visible ? (
-      <LiaEyeSlashSolid
-        onClick={() => setVisible(!visible)}
-        className="input-icon-password"
-      />
-    ) : (
-      <LiaEyeSolid
-        onClick={() => setVisible(!visible)}
-        className="input-icon-password"
-      />
-    );
-
-    const inputType = visible ? "text" : "password";
-
-    return [inputType, iconEye];
+    setVisible(!visible);
   };
-  const [passwordType, iconEye] = togglePasswordVisibility();
+
+  const passwordType = visible ? "text" : "password";
+  const iconEye = visible ? (
+    <LiaEyeSlashSolid
+      onClick={togglePasswordVisibility}
+      className="input-icon-password"
+    />
+  ) : (
+    <LiaEyeSolid
+      onClick={togglePasswordVisibility}
+      className="input-icon-password"
+    />
+  );
 
   return (
     <div>

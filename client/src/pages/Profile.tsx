@@ -1,12 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useAxiosWithAuth from "../hooks/useAxiosWithAuth";
 
 const ENDPOINT_URL = `/user/favorites`;
 
+interface Favorite {
+  favoriteID: string;
+  favoriteType: string;
+}
+
+interface Data {
+  totalFavorites: number;
+  favorites: Favorite[];
+}
+
 function Profile() {
   const axiosWithAuth = useAxiosWithAuth();
-  const [data, setData] = useState([]);
-  const [favorites, setFavorites] = useState([]);
+  const [data, setData] = useState<Data | null>(null);
+  const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 

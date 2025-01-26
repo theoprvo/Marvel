@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { FiSearch, FiUser, FiLogOut } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 
 const Navbar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);

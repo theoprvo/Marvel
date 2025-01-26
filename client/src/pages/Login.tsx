@@ -30,9 +30,7 @@ function Login() {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (emailRef.current) {
-      emailRef.current.focus();
-    }
+    emailRef.current.focus();
   }, []);
 
   useEffect(() => {
@@ -82,8 +80,6 @@ function Login() {
         setErrorMessage("No Server Response. Please try again later.");
       } else if (error.response.status === 401) {
         setErrorMessage(error.response.data.message);
-      } else if (error.response.status === 401) {
-        setErrorMessage(error.response.data.message);
       } else {
         setErrorMessage("An error occurred. Please try again later.");
       }
@@ -97,23 +93,21 @@ function Login() {
 
   const [visible, setVisible] = useState(false);
   const togglePasswordVisibility = () => {
-    const iconEye = visible ? (
-      <LiaEyeSlashSolid
-        onClick={() => setVisible(!visible)}
-        className="input-icon-password"
-      />
-    ) : (
-      <LiaEyeSolid
-        onClick={() => setVisible(!visible)}
-        className="input-icon-password"
-      />
-    );
-
-    const inputType = visible ? "text" : "password";
-
-    return [inputType, iconEye];
+    setVisible(!visible);
   };
-  const [passwordType, iconEye] = togglePasswordVisibility();
+
+  const passwordType = visible ? "text" : "password";
+  const iconEye = visible ? (
+    <LiaEyeSlashSolid
+      onClick={togglePasswordVisibility}
+      className="input-icon-password"
+    />
+  ) : (
+    <LiaEyeSolid
+      onClick={togglePasswordVisibility}
+      className="input-icon-password"
+    />
+  );
 
   return (
     <div>

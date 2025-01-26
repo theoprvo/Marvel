@@ -18,9 +18,12 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true,
+    credentials: true, // Important pour autoriser les cookies
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Autorise ces méthodes
+    allowedHeaders: ["Content-Type", "Authorization"], // Autorise ces headers
   })
 );
+app.options("*", cors());
 
 connectDB();
 
