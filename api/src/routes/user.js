@@ -11,9 +11,13 @@ const auth = require("../middlewares/auth");
 const { log } = require("console");
 
 const createAccessToken = (user) => {
+  return createAccessTokenByEmail(user.email);
+};
+
+const createAccessTokenByEmail = (email) => {
   return jwt.sign(
     {
-      email: user.email,
+      email: email,
     },
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "30s" }
@@ -141,10 +145,11 @@ router.post("/user/refresh-token", (req, res) => {
     return res.status(403).json({ error: "No refresh token provided" });
   }
   try {
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    console.log("début decoded");
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     console.log("decoded values :", decoded);
 
-    const newAccessToken = createAccessToken(decoded);
+    const newAccessToken = createAccessTokenByEmail(decoded);
 
     res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
