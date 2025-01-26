@@ -149,7 +149,7 @@ router.post("/user/refresh-token", (req, res) => {
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
     console.log("decoded values :", decoded);
 
-    const newAccessToken = createAccessTokenByEmail(decoded);
+    const newAccessToken = createAccessTokenByEmail(decoded.email);
 
     res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
